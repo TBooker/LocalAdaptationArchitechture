@@ -5,8 +5,16 @@
 initialize() {
 
 
-	defineConstant("map_1",1);
-	defineConstant("map_2",2);
+//	defineConstant("map_1",1);
+//	defineConstant("map_2",2);
+
+//	defineConstant("N", 50);
+//// eg Vs = 192 gives a 40% fitness difference between best and orst case scenario
+//	defineConstant("Vs", 192);
+//	defineConstant("sig_a", 1);
+//	defineConstant("REP", 98); // For saving files
+//	defineConstant("MIG", 3.5); 
+
 
 	defineConstant("BC", "/Users/s0784966/UBC/LocalAdaptationArchitechture/SlimConfigs/BC_Map_environments.8x8.txt");
   	defineConstant("cline", "/Users/s0784966/UBC/LocalAdaptationArchitechture/SlimConfigs/oneDCline_environments.8x8.txt");
@@ -34,16 +42,9 @@ initialize() {
 	}
 	
 		
-	defineConstant("N", 50);
-// Vs = 192 gives a 40% fitness difference between best and orst case scenario
-	defineConstant("Vs", 192);
-	defineConstant("sig_a", 1);
-	defineConstant("REP", 98); // For saving files
-
-
 // Keep track of the tree sequence for the population
 
-//	initializeTreeSeq();
+	initializeTreeSeq();
 
 	initializeMutationRate(1e-10);
 	
@@ -144,7 +145,7 @@ late() {
 
 // Set the migration rate based on the specified Fst
 //   	mig = ((1/Fst) - 1)/(4*N*subpopCount);
-	mig = 3.5 / ( 2*N );
+	mig = MIG / ( 2*N );
         for (i in 1:subpopCount-1) {
                 row = asInteger(i/sLen);
                 col = asInteger(i - (sLen * row));
@@ -173,13 +174,8 @@ late() {
 }
 
 
-100 late(){
-for (mut in sim.mutations){
-		print(c(mut.id, mut.getValue("e1"),mut.getValue("e2")));
-	}
-}
 
-10000 early(){
+40001 early(){
 
 // We probably won't get a lot of substitutions, but let's turn them off because we want to keep a record of the phenotypes
 	m2.convertToSubstitution = F;
@@ -199,9 +195,9 @@ for (mut in sim.mutations){
 	}
 }
 
-1102:60102 late() {
+40001:100001 late() {
 
-	if (sim.generation == 1102){
+	if (sim.generation == 40001){
 		head = "generation,pop,ind,opt_1,opt_2,phen1,phen2";
 		writeFile(paste(c(REP,"_", sig_a,"_", Vs,".phen.txt"), sep=""), head);	
 }
@@ -209,7 +205,7 @@ for (mut in sim.mutations){
 
 // Let's track local adaptation through time too
 
-	if ((sim.generation-1102)%500 == 0){
+	if ((sim.generation-1)%2000 == 0){
 
 		for (ind in sim.subpopulations.individuals){
 				// construct phenotypes from additive effects of QTL mutations
@@ -223,7 +219,9 @@ for (mut in sim.mutations){
 	}
 }
 
-60102 late() {
+100001 late() {
 	sim.outputFull(filePath = paste(c(REP,"_", sig_a,"_", Vs,".sim.txt"), sep=""));
+	sim.treeSeqOutput(paste(c(REP,"_", sig_a,"_", Vs,".trees"), sep=""));
+
 }
 
