@@ -13,3 +13,11 @@ read -r REP  MAP1  MAP2  NE  SIGA  VS MIG <<< "$line"
 
 
 ```
+
+## Making environments for SLiMulations
+
+Running the following script generates a set of environments for running SLiM simulations.
+
+```
+python buildEnvironments.py
+```
