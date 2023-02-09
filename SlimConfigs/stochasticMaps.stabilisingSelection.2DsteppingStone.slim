@@ -14,9 +14,9 @@ initialize() {
 
 
 
-	defineConstant("optimaFile_1", "/Users/s0784966/UBC/LocalAdaptationArchitechture/my_maps/"+MAP+"_map.txt");
+	defineConstant("optimaFile_1", "/home/booker/projects/def-whitlock/booker/LocalAdaptationArchitechture/my_maps/"+MAP+"_map.txt");
+        defineConstant("optimaFile_2", "/home/booker/projects/def-whitlock/booker/LocalAdaptationArchitechture/my_maps/"+MAP+"_map.txt");
 
-	defineConstant("optimaFile_2", "/Users/s0784966/UBC/LocalAdaptationArchitechture/my_maps/"+MAP+"_map.txt");
 
 
 // Keep track of the tree sequence for the population
@@ -87,8 +87,8 @@ late() {
 		ind.setValue("phenotype2", phenotype2);
 		// calculate fitness effects
 
-		effect1 = ((ind.subpopulation.getValue("opt_1") - phenotype1)^2)/(2*Vs);
-		effect2 = ((ind.subpopulation.getValue("opt_2") - phenotype2)^2)/(2*Vs);
+		effect1 = ((ind.subpopulation.getValue("opt_1")/10. - phenotype1)^2)/(2*Vs);
+		effect2 = ((ind.subpopulation.getValue("opt_2")/10. - phenotype2)^2)/(2*Vs);
 		ind.fitnessScaling = exp(-1*(effect1));
 
 
@@ -152,7 +152,7 @@ late() {
 
 
 401 early(){
-
+    print("HEELLLOOO");
 // We probably won't get a lot of substitutions, but let's turn them off because we want to keep a record of the phenotypes
 	m2.convertToSubstitution = F;
 	m2.mutationStackPolicy = "f";
@@ -166,8 +166,8 @@ late() {
 	subpopCount = length(optima_1);
 
 	for (i in 0:(subpopCount-1)){
-		sim.subpopulations[i].setValue("opt_1", asInteger(optima_1[i]));
-		sim.subpopulations[i].setValue("opt_2", asInteger(optima_2[i]));
+		sim.subpopulations[i].setValue("opt_1", asInteger(asFloat(optima_1[i])*10));
+		sim.subpopulations[i].setValue("opt_2", asInteger(asFloat(optima_2[i])*10));
 	}
 }
 
@@ -175,7 +175,7 @@ late() {
 
 	if (sim.generation == 40001){
 		head = "generation,pop,ind,opt_1,opt_2,phen1,phen2";
-		writeFile(paste(c(REP,"_", sig_a,"_", Vs,".phen.txt"), sep=""), head);
+		writeFile(paste(c(dir,"/",REP,"_", sig_a,"_", Vs,".phen.txt"), sep=""), head);
 }
 
 
@@ -190,13 +190,23 @@ late() {
 				phenotype2 = size(muts) ? sum(muts.getValue("e2")) else 0.0;
 
 				out = paste(c( sim.generation, ind.subpopulation.id, ind.index, ind.subpopulation.getValue("opt_1"), ind.subpopulation.getValue("opt_2"), phenotype1, phenotype2), sep =',');
-				writeFile(paste(c(REP,"_", sig_a,"_", Vs,".phen.txt"), sep=""), out, append=T);
+				writeFile(paste(c(dir,"/",REP,"_", sig_a,"_", Vs,".phen.txt"), sep=""), out, append=T);
 		}
 	}
 }
 
 50001 late() {
-	sim.outputFull(filePath = paste(c(REP,"_", sig_a,"_", Vs,".sim.txt"), sep=""));
-	sim.treeSeqOutput(paste(c(REP,"_", sig_a,"_", Vs,".trees"), sep=""));
+
+      mut_head = "ID,position,selCoeff,e1,e2";
+	writeFile(paste(c(dir,"/",REP,"_", sig_a,"_", Vs,".mutations.txt"), sep=""), mut_head);	
+
+	for (mut in sim.mutations){
+		mut_out = paste( c( asString(asInteger(mut.id)), asString(asInteger(mut.position)), asString(mut.selectionCoeff), asString(mut.getValue("e1")), 	asString(mut.getValue("e2"))), sep = ",");
+		writeFile(paste(c(dir,"/",REP,"_", sig_a,"_", Vs,".mutations.txt"), sep=""), mut_out, append = T);	
+
+		}
+
+sim.outputFull(filePath = paste(c(dir,"/",REP,"_", sig_a,"_", Vs,".sim.txt"), sep=""));
+	sim.treeSeqOutput(paste(c(dir,"/",REP,"_", sig_a,"_", Vs,".trees"), sep=""));
 
 }
