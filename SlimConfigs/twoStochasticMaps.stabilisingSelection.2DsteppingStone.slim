@@ -6,7 +6,7 @@ initialize() {
 
 
 	defineConstant("MAP_1",1);
-	defineConstant("MAP_2",1);
+	defineConstant("MAP_2",154);
 	defineConstant("N", 50);
 	defineConstant("Vs", 192);
 	defineConstant("sig_a", 1);
@@ -114,8 +114,8 @@ late() {
 
 	for (i in 0:(subpopCount-1)){
 		sim.addSubpop(i,  N);
-		sim.subpopulations[i].setValue("opt_1", asInteger(0));
-		sim.subpopulations[i].setValue("opt_2", asInteger(0));
+		sim.subpopulations[i].setValue("opt_1", asFloat(0));
+		sim.subpopulations[i].setValue("opt_2", asFloat(0));
 	}
 
    sLen = asInteger(sqrt(subpopCount));
@@ -167,8 +167,8 @@ late() {
 	subpopCount = length(optima_1);
 
 	for (i in 0:(subpopCount-1)){
-		sim.subpopulations[i].setValue("opt_1", asInteger(optima_1[i]));
-		sim.subpopulations[i].setValue("opt_2", asInteger(optima_2[i]));
+		sim.subpopulations[i].setValue("opt_1", asFloat(optima_1[i]));
+		sim.subpopulations[i].setValue("opt_2", asFloat(optima_2[i]));
 	}
 }
 
